@@ -25,7 +25,7 @@ int orientation(Point p, Point q, Point r)
     return (val > 0)? 1: 2; // clock or counterclock wise 
 } 
   
-void convexHull(vector<Point> &points, int n) 
+void Jarvis(vector<Point> &points, int n) 
 { 
 
     if (n < 3) return; 
@@ -60,6 +60,6 @@ int main()
     vector<Point> points{{0, 3}, {2, 2}, {1, 1}, {2, 1}, 
                       {3, 0}, {0, 0}, {3, 3}}; 
     int n = points.size();
-    convexHull(points, n); 
+    Jarvis(points, n); 
     return 0; 
 } 
