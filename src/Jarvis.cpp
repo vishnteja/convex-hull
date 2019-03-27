@@ -1,65 +1,56 @@
-#include <bits/stdc++.h> 
+#include "Jarvis.h" 
+#define Point pair<int,int>
 using namespace std; 
-  
-class Point 
-{ 
-    float x, y;
-    public:
-    
-    Point(float x, float y){
-        this->x = x;
-        this->y = y;
-    }
-    float get_x(){return x;}
-    float get_y(){return y;}
-    void set_x(float x){this->x = x;}
-    void set_y(float y){this->y = y;}
-}; 
 
+/**
+ * @brief To find orientation of ordered triplet (p, q, r).
+ *         
+ * @param p First Point
+ * @param q Second Point
+ * @param r Third Point
+ * @return int The function returns following values 
+ *             0 --> p, q and r are colinear 
+ *             1 --> Clockwise 
+ *             2 --> Counterclockwise
+ */
 int orientation(Point p, Point q, Point r) 
 { 
-    int val = (q.get_y() - p.get_y()) * (r.get_x() - q.get_x()) - 
-              (q.get_x() - p.get_x()) * (r.get_y() - q.get_y()); 
+    int val = (q.second - p.second) * (r.first - q.first) - 
+              (q.first - p.first) * (r.second - q.second); 
   
     if (val == 0) return 0;  // colinear 
     return (val > 0)? 1: 2; // clock or counterclock wise 
 } 
-  
-void Jarvis(vector<Point> &points, int n) 
-{ 
 
+/**
+ * @brief computes convex hull stores in output_hull
+ * computes convex hull as described in Jarvis March Algorithm
+ */
+void Jarvis::computeHull()
+{
+    int n = input_points.size();    
     if (n < 3) return; 
-    vector<Point> hull; 
 
     int l = 0; 
     for (int i = 1; i < n; i++) 
-        if (points[i].get_x() < points[l].get_x()) 
+        if (input_points[i].first < input_points[l].first) 
             l = i; 
 
     int p = l, q; 
     do
     { 
-        hull.push_back(points[p]); 
+        output_hull.push_back(input_points[p]); 
         q = (p+1)%n; 
         for (int i = 0; i < n; i++) 
         { 
-           if (orientation(points[p], points[i], points[q]) == 2) 
+           if (orientation(input_points[p], input_points[i], input_points[q]) == 2) 
                q = i; 
         } 
         p = q; 
  
     } while (p != l);  
 
-    for (int i = 0; i < hull.size(); i++) 
-        cout << "(" << hull[i].get_x() << ", "
-              << hull[i].get_y() << ")\n"; 
-} 
- 
-int main() 
-{ 
-    vector<Point> points{{0, 3}, {2, 2}, {1, 1}, {2, 1}, 
-                      {3, 0}, {0, 0}, {3, 3}}; 
-    int n = points.size();
-    Jarvis(points, n); 
-    return 0; 
-} 
+    // for (int i = 0; i < output_hull.size(); i++) 
+    //     cout << "(" << output_hull[i].first << ", "
+    //           << output_hull[i].second << ")\n"; 
+}  

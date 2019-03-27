@@ -8,8 +8,6 @@
 using namespace std;
 
 class Ultimate: public ConvexHull{
-    private:
-        vector<Point > output_hull;
     public:
         Ultimate();
         Ultimate(string file_path);

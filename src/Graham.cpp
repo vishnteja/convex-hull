@@ -1,23 +1,13 @@
-#include <bits/stdc++.h> 
-using namespace std; 
-  
-class Point 
-{ 
-    float x, y;
-    public:
-    
-    Point(float x, float y){
-        this->x = x;
-        this->y = y;
-    }
-    float get_x(){return x;}
-    float get_y(){return y;}
-    void set_x(float x){this->x = x;}
-    void set_y(float y){this->y = y;}
-}; 
+#include "Graham.h"
+using namespace std;   
  
 Point p0(0,0); 
-  
+
+/**
+ * @brief Finds next to top in a stack 
+ * @param S Stack 
+ * @return Point Next to top element
+ */   
 Point nextToTop(vector<Point> &S) 
 { 
     Point p = S.back(); 
@@ -26,29 +16,60 @@ Point nextToTop(vector<Point> &S)
     S.push_back(p); 
     return res; 
 } 
-  
-int swap(Point &p1, Point &p2) 
+
+/**
+ * @brief Swaps two points
+ * @param p1 First point
+ * @param p2 Second point
+ */  
+void swap(Point &p1, Point &p2) 
 { 
     Point temp = p1; 
     p1 = p2; 
     p2 = temp; 
 } 
 
+/**
+ * @brief Finds the square distance between two points.
+ *         
+ * @param p1 First Point
+ * @param p2 Second Point
+ * @return int Squared Distance
+ */
 int distSq(Point p1, Point p2) 
 { 
-    return (p1.get_x() - p2.get_x())*(p1.get_x() - p2.get_x()) + 
-          (p1.get_y() - p2.get_y())*(p1.get_y() - p2.get_y()); 
+    return (p1.first - p2.first)*(p1.first - p2.first) + 
+          (p1.second - p2.second)*(p1.second - p2.second); 
 } 
-  
+
+/**
+ * @brief To find orientation of ordered triplet (p, q, r).
+ *         
+ * @param p First Point
+ * @param q Second Point
+ * @param r Third Point
+ * @return int The function returns following values 
+ *             0 --> p, q and r are colinear 
+ *             1 --> Clockwise 
+ *             2 --> Counterclockwise
+ */  
 int orientation(Point p, Point q, Point r) 
 { 
-    int val = (q.get_y() - p.get_y()) * (r.get_x() - q.get_x()) - 
-              (q.get_x() - p.get_x()) * (r.get_y() - q.get_y()); 
+    int val = (q.second - p.second) * (r.first - q.first) - 
+              (q.first - p.first) * (r.second - q.second); 
   
     if (val == 0) return 0;  // colinear 
     return (val > 0)? 1: 2; // clock or counterclock wise 
 } 
 
+/**
+ * @brief A function used by library function qsort() to sort an array of 
+ * points with respect to the first point
+ *         
+ * @param vp1 Pointer to first element
+ * @param vp2 Pointer to second element
+ * @return int True or False
+ */
 int compare(const void *vp1, const void *vp2) 
 { 
    Point *p1 = (Point *)vp1; 
@@ -61,55 +82,50 @@ int compare(const void *vp1, const void *vp2)
    return (o == 2)? -1: 1; 
 } 
 
-void grahamScan(vector<Point> &points, int n) 
+/**
+ * @brief computes convex hull stores in output_hull
+ * computes convex hull as described in Graham Scan Algorithm
+ */
+void Graham::computeHull() 
 { 
-   int ymin = points[0].get_y(), min = 0; 
+   int n = input_points.size(); 
+   int ymin = input_points[0].second, min = 0; 
    for (int i = 1; i < n; i++) 
    { 
-     int y = points[i].get_y(); 
-     if ((y < ymin) || (ymin == y && points[i].get_x() < points[min].get_x())) 
-        ymin = points[i].get_y(), min = i; 
+     int y = input_points[i].second; 
+     if ((y < ymin) || (ymin == y && input_points[i].first < input_points[min].first)) 
+        ymin = input_points[i].second, min = i; 
    } 
-   swap(points[0], points[min]); 
-   p0 = points[0]; 
-   qsort(&points[1], n-1, sizeof(Point), compare); 
+   swap(input_points[0], input_points[min]); 
+   p0 = input_points[0]; 
+   qsort(&input_points[1], n-1, sizeof(Point), compare); 
 
    int m = 1; 
    for (int i=1; i<n; i++) 
    { 
-       while (i < n-1 && orientation(p0, points[i], points[i+1]) == 0) 
+       while (i < n-1 && orientation(p0, input_points[i], input_points[i+1]) == 0) 
           i++; 
   
-       points[m] = points[i]; 
+       input_points[m] = input_points[i]; 
        m++;  
    } 
  
    if (m < 3) return; 
-   vector<Point> S; 
-   S.push_back(points[0]); 
-   S.push_back(points[1]); 
-   S.push_back(points[2]); 
+   output_hull.push_back(input_points[0]); 
+   output_hull.push_back(input_points[1]); 
+   output_hull.push_back(input_points[2]); 
 
    for (int i = 3; i < m; i++) 
    {
-      while (orientation(nextToTop(S), S.back(), points[i]) != 2) 
-         S.pop_back(); 
-      S.push_back(points[i]); 
+      while (orientation(nextToTop(output_hull), output_hull.back(), input_points[i]) != 2) 
+         output_hull.pop_back(); 
+      output_hull.push_back(input_points[i]); 
    } 
 
-   while (!S.empty()) 
-   { 
-       Point p = S.back(); 
-       cout << "(" << p.get_x() << ", " << p.get_y() <<")" << endl; 
-       S.pop_back(); 
-   } 
+//    while (!output_hull.empty()) 
+//    { 
+//        Point p = output_hull.back(); 
+//        cout << "(" << p.first << ", " << p.second <<")" << endl; 
+//        output_hull.pop_back(); 
+//    } 
 } 
-
-int main() 
-{ 
-   vector<Point> points{{0, 3}, {1, 1}, {2, 2}, {4, 4}, 
-                      {0, 0}, {1, 2}, {3, 1}, {3, 3}}; 
-    int n = points.size();
-    grahamScan(points, n); 
-    return 0; 
-}

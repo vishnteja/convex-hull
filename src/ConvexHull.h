@@ -12,6 +12,7 @@ class ConvexHull{
      * 
      */
         vector<Point > input_points;
+        vector<Point > output_hull;
     public:
         void readFile(string file_path);
         vector<Point > getInputPoints();
