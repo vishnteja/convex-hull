@@ -61,6 +61,9 @@ double Segment::slope(){
  * 
  * @param c Point to check orientation
  * @return int 
+ *             0 --> Colinear 
+ *             1 --> Clockwise 
+ *             -1 --> Counterclockwise
  */
 int Segment::orientation(Point c){
     int res = (p2.second-p1.second)*(c.first-p2.first) - (c.second-p2.second)*(p2.first-p1.first); 

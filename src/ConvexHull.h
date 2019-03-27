@@ -16,6 +16,7 @@ class ConvexHull{
     public:
         void readFile(string file_path);
         vector<Point > getInputPoints();
+        vector<Point > getOutput();
 };
 
 #endif

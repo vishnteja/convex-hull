@@ -52,3 +52,6 @@ vector<Point > ConvexHull::getInputPoints(){
     return this->input_points;
 }
 
+vector<Point > ConvexHull::getOutput(){
+    return output_hull;
+}

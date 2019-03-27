@@ -1,18 +1,17 @@
 #include <bits/stdc++.h>
 #include "Ultimate.h"
+#include "Jarvis.h"
 
 int main(){
-    Ultimate chull = Ultimate();
+    Jarvis chull = Jarvis();
     
     chull.readFile("input_1.txt");
-    vector<Point > u = chull.computeUpperHull();
-    vector<Point > l = chull.computeLowerHull();
-
-    u.insert(u.end(), l.rbegin(), l.rend());
+    chull.computeHull();
+    vector<Point > vec = chull.getOutput();
     
     ofstream out_file;
     out_file.open("output_1.txt");
-    for(auto i=u.begin(); i!= u.end(); i++){
+    for(auto i=vec.begin(); i!= vec.end(); i++){
         out_file<<(*i).first<<" "<<(*i).second<<endl;
     }
     return 0;

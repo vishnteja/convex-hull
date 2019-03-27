@@ -1,27 +1,7 @@
-#include "Jarvis.h" 
-#define Point pair<int,int>
+#include "Jarvis.h"
+#include "Segment.h" 
 using namespace std; 
-
-/**
- * @brief To find orientation of ordered triplet (p, q, r).
- *         
- * @param p First Point
- * @param q Second Point
- * @param r Third Point
- * @return int The function returns following values 
- *             0 --> p, q and r are colinear 
- *             1 --> Clockwise 
- *             2 --> Counterclockwise
- */
-int orientation(Point p, Point q, Point r) 
-{ 
-    int val = (q.second - p.second) * (r.first - q.first) - 
-              (q.first - p.first) * (r.second - q.second); 
-  
-    if (val == 0) return 0;  // colinear 
-    return (val > 0)? 1: 2; // clock or counterclock wise 
-} 
-
+ 
 /**
  * @brief computes convex hull stores in output_hull
  * computes convex hull as described in Jarvis March Algorithm
@@ -43,7 +23,8 @@ void Jarvis::computeHull()
         q = (p+1)%n; 
         for (int i = 0; i < n; i++) 
         { 
-           if (orientation(input_points[p], input_points[i], input_points[q]) == 2) 
+            Segment seg = Segment(input_points[p], input_points[i]);
+            if (seg.orientation(input_points[q]) == -1) 
                q = i; 
         } 
         p = q; 
