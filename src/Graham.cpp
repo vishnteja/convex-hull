@@ -18,12 +18,12 @@ class Point
  
 Point p0(0,0); 
   
-Point nextToTop(stack<Point> &S) 
+Point nextToTop(vector<Point> &S) 
 { 
-    Point p = S.top(); 
-    S.pop(); 
-    Point res = S.top(); 
-    S.push(p); 
+    Point p = S.back(); 
+    S.pop_back(); 
+    Point res = S.back(); 
+    S.push_back(p); 
     return res; 
 } 
   
@@ -61,7 +61,7 @@ int compare(const void *vp1, const void *vp2)
    return (o == 2)? -1: 1; 
 } 
 
-void convexHull(vector<Point> &points, int n) 
+void grahamScan(vector<Point> &points, int n) 
 { 
    int ymin = points[0].get_y(), min = 0; 
    for (int i = 1; i < n; i++) 
@@ -85,23 +85,23 @@ void convexHull(vector<Point> &points, int n)
    } 
  
    if (m < 3) return; 
-   stack<Point> S; 
-   S.push(points[0]); 
-   S.push(points[1]); 
-   S.push(points[2]); 
+   vector<Point> S; 
+   S.push_back(points[0]); 
+   S.push_back(points[1]); 
+   S.push_back(points[2]); 
 
    for (int i = 3; i < m; i++) 
    {
-      while (orientation(nextToTop(S), S.top(), points[i]) != 2) 
-         S.pop(); 
-      S.push(points[i]); 
+      while (orientation(nextToTop(S), S.back(), points[i]) != 2) 
+         S.pop_back(); 
+      S.push_back(points[i]); 
    } 
 
    while (!S.empty()) 
    { 
-       Point p = S.top(); 
+       Point p = S.back(); 
        cout << "(" << p.get_x() << ", " << p.get_y() <<")" << endl; 
-       S.pop(); 
+       S.pop_back(); 
    } 
 } 
 
@@ -110,6 +110,6 @@ int main()
    vector<Point> points{{0, 3}, {1, 1}, {2, 2}, {4, 4}, 
                       {0, 0}, {1, 2}, {3, 1}, {3, 3}}; 
     int n = points.size();
-    convexHull(points, n); 
+    grahamScan(points, n); 
     return 0; 
 }
