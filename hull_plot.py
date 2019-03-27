@@ -10,15 +10,15 @@ for point in inp_points:
     y.append(point[1])
 plt.scatter(x,y,edgecolors="lightblue")
 
-# out_points = np.loadtxt(fname="output.txt")
-# # print(out_points)
-# x = []
-# y = []
-# for point in out_points:
-#     x.append(point[0])
-#     y.append(point[1])
-# plt.scatter(x,y,edgecolors="red")
-# x.append(x[0])
-# y.append(y[0])
-# plt.plot(x,y,color="orange")
+out_points = np.loadtxt(fname="output_1.txt")
+# print(out_points)
+x = []
+y = []
+for point in out_points:
+    x.append(point[0])
+    y.append(point[1])
+plt.scatter(x,y,edgecolors="red")
+x.append(x[0])
+y.append(y[0])
+plt.plot(x,y,color="orange")
 plt.show()

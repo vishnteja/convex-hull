@@ -15,6 +15,7 @@ class Ultimate: public ConvexHull{
         Ultimate(string file_path);
         void computeHull();
         vector<Point > computeUpperHull(); 
+        vector<Point > computeLowerHull();
         vector<Point > upperHull(Point pmin, Point pmax, vector<Point > T);
         Segment upperBridge(vector<Point > S, double x_median);
         vector<Point > lowerHull(Point pmin, Point pmax, vector<Point > T);
