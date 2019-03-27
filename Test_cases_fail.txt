@@ -1,0 +1,15 @@
+Testcases Not working
+1. 
+
+732 590
+415 360
+276 276
+229 544
+299 95
+
+229 544
+299 95
+732 590
+
+Fixed it
+bug:= comparing double

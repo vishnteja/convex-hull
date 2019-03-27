@@ -2,6 +2,15 @@
 using namespace std;
 #define Point pair<int, int>  
 
+bool doubleEqual(double a, double b){
+    double res = abs(a - b);
+    if(res < 10e-5){
+        return true;
+    }else{
+        return false;
+    } 
+}
+
 /**
  * @brief Prints points
  * Takes vector of points and prints them
@@ -425,7 +434,7 @@ Segment Ultimate::upperBridge(vector<Point > S, double x_median){
             pk = p;
             pm = p;        
         }
-        else if(y_intercept == maximum){
+        else if(doubleEqual(maximum, y_intercept)){
             max.push_back(p);
             if(p.first < pk.first)
                 pk = (*i);
@@ -567,6 +576,9 @@ vector<Point > Ultimate::lowerHull(Point pmin, Point pmax, vector<Point > T){
         // 2. Find median of the x coordinates
         double median_x = medianX(T);
 
+        cout<<"Points Considered For Lower Hull"<<endl;
+        traverse(T);
+        cout<<endl;
         // 3. Find Upper Bridge segment pl-pr
         Segment lower_bridge = lowerBridge(T, median_x);
         Point pl = lower_bridge.getP1();
@@ -744,7 +756,7 @@ Segment Ultimate::lowerBridge(vector<Point > S, double x_median){
             pk = p;
             pm = p;        
         }
-        else if(y_intercept == minimum){
+        else if(doubleEqual(minimum, y_intercept)){
             min.push_back(p);
             if(p.first < pk.first)
                 pk = p;
