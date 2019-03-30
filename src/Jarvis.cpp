@@ -1,7 +1,14 @@
-#include "Jarvis.h"
-#include "Segment.h" 
+#include "../include/Jarvis.h"
 using namespace std; 
  
+int orientationJ(Point p, Point q, Point r){
+    int val = (q.second - p.second) * (r.first - q.first) - 
+              (q.first - p.first) * (r.second - q.second); 
+  
+    if (val == 0) return 0;  // colinear 
+    return (val > 0)? 1: 2; // clock or counterclock wise 
+}
+
 /**
  * @brief computes convex hull stores in output_hull
  * computes convex hull as described in Jarvis March Algorithm
@@ -23,8 +30,7 @@ void Jarvis::computeHull()
         q = (p+1)%n; 
         for (int i = 0; i < n; i++) 
         { 
-            Segment seg = Segment(input_points[p], input_points[i]);
-            if (seg.orientation(input_points[q]) == -1) 
+            if (orientationJ(input_points[p], input_points[i], input_points[q]) == 2) 
                q = i; 
         } 
         p = q; 

@@ -13,10 +13,13 @@ class ConvexHull{
      */
         vector<Point > input_points;
         vector<Point > output_hull;
+        vector<map<Point, vector<int> > > sate_history;
     public:
         void readFile(string file_path);
+        void setInput(vector<Point > input);
         vector<Point > getInputPoints();
         vector<Point > getOutput();
+        void computeHull(string algo_name);
 };
 
 #endif

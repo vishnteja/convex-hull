@@ -19,6 +19,8 @@ class Ultimate: public ConvexHull{
         vector<Point > lowerHull(Point pmin, Point pmax, vector<Point > T);
         Segment lowerBridge(vector<Point > S, double x_median);
         double medianX(vector<Point > T);
+        void storeState(vector<Point > points, vector<Segment > edges);
+        void initMap();
 };
 
 #endif

@@ -1,4 +1,4 @@
-#include "Graham.h"
+#include "../include/Graham.h"
 using namespace std;   
  
 Point p0(0,0); 

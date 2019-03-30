@@ -1,4 +1,4 @@
-#include "Segment.h"
+#include "../include/Segment.h"
 #include <bits/stdc++.h>
 #define Point pair<int, int>
 using namespace std;

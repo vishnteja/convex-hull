@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include "MOM.h"
 using namespace std;
 
 void swap(double *a, double *b) 
@@ -77,11 +78,20 @@ pair<double,int> medOfMed(vector<double> &medArr)
 {
     double median = kthSmallest(medArr, 0, medArr.size()-1, 1 + medArr.size()/2); 
     int count = 0;
-    for(int i=0; i<medArr.size(); i++)
-    {
-        if(medArr[i] == median)
-            count++;
-    }
+    // for(int i=0; i<medArr.size(); i++)
+    // {
+    //     if(medArr[i] == median)
+    //         count++;
+    // }
+    count = 10;
     return pair<double,int>(median, count);
+}
+
+pair<double,int> medOfMedPoints(vector<Point > p){
+    vector<double > vec;
+    for(auto i=p.begin(); i!=p.end(); i++){
+        vec.push_back((*i).first);
+    }
+    return medOfMed(vec);
 }
  

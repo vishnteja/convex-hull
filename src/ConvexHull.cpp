@@ -1,6 +1,7 @@
-#include "ConvexHull.h"
-#include <bits/stdc++.h>
-#define Point pair<int, int>
+#include "../include/ConvexHull.h"
+#include "../include/Ultimate.h"
+#include "../include/Jarvis.h"
+#include "../include/Graham.h"
 using namespace std;
 
 /**
@@ -54,4 +55,27 @@ vector<Point > ConvexHull::getInputPoints(){
 
 vector<Point > ConvexHull::getOutput(){
     return output_hull;
+}
+
+void ConvexHull::setInput(vector<Point > input){
+    input_points = input;
+}
+
+void ConvexHull::computeHull(string algo_name){
+    if(algo_name=="jarvis"){
+        Jarvis jarv_obj = Jarvis();
+        jarv_obj.setInput(input_points);
+        jarv_obj.computeHull();
+        output_hull = jarv_obj.getOutput();
+    }else if(algo_name == "graham"){
+        Graham grah_obj = Graham();
+        grah_obj.setInput(input_points);
+        grah_obj.computeHull();
+        output_hull = grah_obj.getOutput();
+    }else if(algo_name == "kps"){
+        Ultimate kps_obj = Ultimate();
+        kps_obj.setInput(input_points);
+        kps_obj.computeHull();
+        output_hull = kps_obj.getOutput();
+    }
 }
