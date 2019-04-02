@@ -4,21 +4,24 @@
 int main(int argc, char*argv[]){
     
     string input_string = string(argv[1]);
+    string algo_name = string(argv[2]);
     cout<<"Argument "<<input_string<<endl;
+    cout<<"Argument "<<algo_name<<endl;
     
     ConvexHull chull = ConvexHull();
 
     chull.readFile(string(argv[1]));
     vector<Point > vec = chull.getInputPoints();
-    for(auto i=vec.begin(); i!= vec.end(); i++){
-        cout<<(*i).first<<" "<<(*i).second<<endl;
-    }
+    // for(auto i=vec.begin(); i!= vec.end(); i++){
+    //     cout<<(*i).first<<" "<<(*i).second<<endl;
+    // }
     
-    chull.computeHull("kps");
+    chull.computeHull(algo_name);
     vec = chull.getOutput();
     
     ofstream out_file;
-    out_file.open("output_1.txt");
+    
+    out_file.open("output_"+algo_name+".txt");
     for(auto i=vec.begin(); i!= vec.end(); i++){
         out_file<<(*i).first<<" "<<(*i).second<<endl;
     }

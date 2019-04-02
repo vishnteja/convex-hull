@@ -55,7 +55,7 @@ int distSq(Point p1, Point p2)
  */  
 int orientation(Point p, Point q, Point r) 
 { 
-    int val = (q.second - p.second) * (r.first - q.first) - 
+   long long int val = (q.second - p.second) * (r.first - q.first) - 
               (q.first - p.first) * (r.second - q.second); 
   
     if (val == 0) return 0;  // colinear 
@@ -88,6 +88,10 @@ int compare(const void *vp1, const void *vp2)
  */
 void Graham::computeHull() 
 { 
+   clock_t start, end;
+   double cpu_time;
+   start = clock();
+   
    int n = input_points.size(); 
    int ymin = input_points[0].second, min = 0; 
    for (int i = 1; i < n; i++) 
@@ -121,6 +125,11 @@ void Graham::computeHull()
          output_hull.pop_back(); 
       output_hull.push_back(input_points[i]); 
    } 
+   end = clock();
+   cpu_time = (double(end - start) / double(CLOCKS_PER_SEC));
+   cout<<"Time: "<<fixed<<cpu_time<<setprecision(6);
+   cout<< " s" << endl;
+
 
 //    while (!output_hull.empty()) 
 //    { 

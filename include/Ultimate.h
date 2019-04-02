@@ -4,7 +4,6 @@
 #include <bits/stdc++.h>
 #include "ConvexHull.h"
 #include "Segment.h"
-#define Point pair<int, int>
 using namespace std;
 
 class Ultimate: public ConvexHull{

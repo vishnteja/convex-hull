@@ -2,7 +2,7 @@
 #define SEGMENT_H
 
 #include <bits/stdc++.h>
-#define Point pair<int, int>
+#define Point pair<long long int, long long int>
 using namespace std;
 
 class Segment{

@@ -12,7 +12,6 @@ using namespace std;
  * @param file_path String containing the path of the input file
  */
 void ConvexHull::readFile(string file_path){
-    // Note:- Points have to positive integers
     // Read Inputs
     ifstream input_file;
     input_file.open(file_path);
@@ -33,9 +32,9 @@ void ConvexHull::readFile(string file_path){
         char* token2 = strtok(NULL, " ");
         string y1(token2);
 
-        // Conver string to int
-        int x = stoi(x1);
-        int y = stoi(y1);
+        // Conver string to long int
+        long long x = stoll(x1);
+        long long y = stoll(y1);
 
         points.push_back(make_pair(x, y));
     }

@@ -1,6 +1,5 @@
 #include "../include/Ultimate.h"
 using namespace std;
-#define Point pair<int, int>  
 
 /**
  * @brief Prints points
@@ -49,8 +48,15 @@ Ultimate::Ultimate(string file_path){
  * computes convex hull as described in Kirkpatrick-Seidel Algorithm
  */
 void Ultimate::computeHull(){
+    clock_t start, end;
+    double cpu_time;
+    start = clock();
     vector<Point > vec = computeUpperHull();
     vector<Point > low = computeLowerHull();
+    end = clock();
+    cpu_time = double(end - start) / double(CLOCKS_PER_SEC);
+    cout<<"Time: "<<fixed<<cpu_time<<setprecision(6);
+    cout<< " s" << endl;
     vec.insert(vec.end(), low.rbegin(), low.rend());
     output_hull = vec;
 }
@@ -108,8 +114,8 @@ vector<Point > Ultimate::computeUpperHull(){
     T.push_back(upmax);
 
     //Debug
-    cout<<"Upper Hull Candidates";
-    traverse(T);
+    // cout<<"Upper Hull Candidates";
+    // traverse(T);
     vector<Point > upper_hull = upperHull(upmin, upmax, T);
 
     return upper_hull;
@@ -209,26 +215,29 @@ vector<Point > Ultimate::upperHull(Point pmin, Point pmax, vector<Point > T){
         if(pr!=pmax){
             Tright.push_back(pmax);
         }
+        //Changes
+        Segment left = Segment(pmin, pl);
+        Segment right = Segment(pr, pmax);
         for(auto i = T.begin(); i!= T.end(); i++){
             // Note:- Can remove more points
             Point temp = *i;
-            if(temp.first < pl.first && temp.first > pmin.first)
-                Tleft.push_back((*i));
-            else if(temp.first > pr.first && temp.first < pmax.first)
-                Tright.push_back((*i));
+            if(left.orientation(temp) < 0 )
+                Tleft.push_back(temp);
+            else if(right.orientation(temp) < 0)
+                Tright.push_back(temp);
         }
 
-        //verbose
-        cout<<"Pmin:"<<pmin.first<<", "<<pmin.second<<endl;
-        cout<<"Pl:"<<pl.first<<", "<<pl.second<<endl;
-        cout<<"Tleft: "<<endl;
-        traverse(Tleft);
+        // //verbose
+        // cout<<"Pmin:"<<pmin.first<<", "<<pmin.second<<endl;
+        // cout<<"Pl:"<<pl.first<<", "<<pl.second<<endl;
+        // cout<<"Tleft: "<<endl;
+        // traverse(Tleft);
 
-        //verbose
-        cout<<"Pr:"<<pr.first<<", "<<pr.second<<endl;
-        cout<<"Pmax:"<<pmax.first<<", "<<pmax.second<<endl;
-        cout<<"Tright: "<<endl;
-        traverse(Tright);
+        // //verbose
+        // cout<<"Pr:"<<pr.first<<", "<<pr.second<<endl;
+        // cout<<"Pmax:"<<pmax.first<<", "<<pmax.second<<endl;
+        // cout<<"Tright: "<<endl;
+        // traverse(Tright);
 
         // 5. Concatenate hull of left and right
         // cout<<"T_Left";
@@ -241,12 +250,13 @@ vector<Point > Ultimate::upperHull(Point pmin, Point pmax, vector<Point > T){
         vector <Point > right_hull = upperHull(pr, pmax, Tright);
 
         // Concatenate 
+        //v0.6
         vector <Point> res;
-        res.push_back(pmin);
         res.insert(res.end(), left_hull.begin(), left_hull.end());
         res.insert(res.end(), right_hull.begin(), right_hull.end());
-        res.push_back(pmax);
-        // 
+        //verbose
+        // cout<<"Upper Hull:"<<endl;
+        // traverse(res);
         // left_hull.insert( left_hull.end(), right_hull.begin(), right_hull.end());
         return res;
     }
@@ -286,10 +296,11 @@ Segment Ultimate::upperBridge(vector<Point > S, double x_median){
     // Generate position vector
     vector<int> pos(S.size());
     iota(pos.begin(), pos.end(), 0);
-    // Random Generator
-    random_device random_dev;
-    mt19937 generator(random_dev());
-    shuffle(pos.begin(), pos.end(), generator);
+    // // Random Generator
+    // random_device random_dev;
+    // mt19937 generator(random_dev());
+    // shuffle(pos.begin(), pos.end(), generator);
+    random_shuffle(pos.begin(), pos.end());
     
     // Pair points to Segments
     vector<Segment > pairs;
@@ -327,9 +338,9 @@ Segment Ultimate::upperBridge(vector<Point > S, double x_median){
             slopes.push_back(segment_slope);
         }
     }
-    //verbose
-    cout<<"Select Pairs:"<<endl;
-    traverse_(select_pairs);
+    // //verbose
+    // cout<<"Select Pairs:"<<endl;
+    // traverse_(select_pairs);
 
     // cout<<"After Slope Pruning Candidates:"<<endl;
     // traverse(candidates);
@@ -337,7 +348,12 @@ Segment Ultimate::upperBridge(vector<Point > S, double x_median){
 
     // 5. Determine Median slope K
     if (slopes.size()==0){
-        cout<<"No Slopes"<<endl;
+        // cout<<"Print S:"<<endl;
+        // traverse(S);
+        // traverse_(pairs);
+        // traverse(candidates);
+        // cout<<"No Slopes"<<endl;
+        return upperBridge(candidates, x_median);
     }
     // cout<<"Slopes Case: ";
     // for(auto i = slopes.begin(); i!= slopes.end(); i++){
@@ -383,7 +399,7 @@ Segment Ultimate::upperBridge(vector<Point > S, double x_median){
     for(auto i = S.begin(); i != S.end(); i++){
         Point p = (*i);
         double y_intercept = p.second - K*p.first;
-        if(abs(maximum-y_intercept)<10e-5){
+        if(abs(maximum-y_intercept)<10e-8){
             max.push_back(p);
             if(p.first < pk.first)
                 pk = (*i);
@@ -397,9 +413,9 @@ Segment Ultimate::upperBridge(vector<Point > S, double x_median){
             pm = p;        
         }
     }
-    //verbose
-    cout<<"pk: "<<pk.first<<", "<<pk.second<<endl;
-    cout<<"pm: "<<pm.first<<", "<<pm.second<<endl<<endl;
+    // //verbose
+    // cout<<"pk: "<<pk.first<<", "<<pk.second<<endl;
+    // cout<<"pm: "<<pm.first<<", "<<pm.second<<endl<<endl;
 
     // 8. Determine if h contains the bridge
     if(pk.first <= x_median && pm.first > x_median){
@@ -442,9 +458,9 @@ Segment Ultimate::upperBridge(vector<Point > S, double x_median){
             candidates.push_back(temp.getP2());
         }
     }
-    //verbose
-    cout<<"Candidates:"<<endl;
-    traverse(candidates);
+    // //verbose
+    // cout<<"Candidates:"<<endl;
+    // traverse(candidates);
 
     // 11. return UpperBridge(Candidates, L)
     return upperBridge(candidates, x_median);
@@ -470,9 +486,6 @@ vector<Point > Ultimate::lowerHull(Point pmin, Point pmax, vector<Point > T){
         // 2. Find median of the x coordinates
         double median_x = medianX(T);
 
-        cout<<"Points Considered For Lower Hull"<<endl;
-        traverse(T);
-        cout<<endl;
         // 3. Find Upper Bridge segment pl-pr
         Segment lower_bridge = lowerBridge(T, median_x);
         Point pl = lower_bridge.getP1();
@@ -489,13 +502,16 @@ vector<Point > Ultimate::lowerHull(Point pmin, Point pmax, vector<Point > T){
         if(pr!=pmax){
             Tright.push_back(pmax);
         }
+        //v0.6 Changes
+        Segment left = Segment(pmin, pl);
+        Segment right = Segment(pr, pmax);
         for(auto i = T.begin(); i!= T.end(); i++){
             // Note:- Can remove more points
             Point temp = *i;
-            if(temp.first < pl.first && temp.first > pmin.first)
+            if(left.orientation(temp) > 0)
                 Tleft.push_back(temp);
-            else if(temp.first > pr.first && temp.first < pmax.first)
-                Tright.push_back(temp);
+            else if(right.orientation(temp) > 0)
+                Tright.push_back(temp) ;
         }
 
 
@@ -549,10 +565,11 @@ Segment Ultimate::lowerBridge(vector<Point > S, double x_median){
     // Generate position vector
     vector<int> pos(S.size());
     iota(pos.begin(), pos.end(), 0);
-    // Random Generator
-    random_device random_dev;
-    mt19937 generator(random_dev());
-    shuffle(pos.begin(), pos.end(), generator);
+    // // Random Generator
+    // random_device random_dev;
+    // mt19937 generator(random_dev());
+    // shuffle(pos.begin(), pos.end(), generator);
+    random_shuffle(pos.begin(), pos.end());
     
     // Pair points to Segments
     vector<Segment > pairs;
@@ -597,7 +614,12 @@ Segment Ultimate::lowerBridge(vector<Point > S, double x_median){
 
     // 5. Determine Median slope K
     if (slopes.size()==0){
-        cout<<"No Slopes"<<endl;
+        // cout<<"Print S:"<<endl;
+        // traverse(S);
+        // traverse_(pairs);
+        // traverse(candidates);
+        // cout<<"No Slopes"<<endl;
+        return upperBridge(candidates, x_median);
     }
     // cout<<"Slopes Case: ";
     // for(auto i = slopes.begin(); i!= slopes.end(); i++){
@@ -643,7 +665,7 @@ Segment Ultimate::lowerBridge(vector<Point > S, double x_median){
     for(auto i = S.begin(); i != S.end(); i++){
         Point p = (*i);
         double y_intercept = p.second - K*p.first;
-        if(abs(minimum - y_intercept)<10e-5){
+        if(abs(minimum - y_intercept)<10e-8){
             min.push_back(p);
             if(p.first < pk.first)
                 pk = p;

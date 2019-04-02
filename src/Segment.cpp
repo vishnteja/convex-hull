@@ -1,6 +1,5 @@
 #include "../include/Segment.h"
 #include <bits/stdc++.h>
-#define Point pair<int, int>
 using namespace std;
 
 /**
@@ -66,10 +65,9 @@ double Segment::slope(){
  *             -1 --> Counterclockwise
  */
 int Segment::orientation(Point c){
-    int res = (p2.second-p1.second)*(c.first-p2.first) - (c.second-p2.second)*(p2.first-p1.first); 
-    if (res == 0) 
-        return 0; 
-    if (res > 0) 
-        return 1; 
-    return -1; 
+
+    long long int val = (p2.second - p1.second)*(c.first - p2.first) - (p2.first - p1.first) * (c.second - p2.second); 
+  
+    if (val == 0) return 0;  // colinear 
+    return (val > 0)? 1: -1; // clock or counterclock wise 
 }

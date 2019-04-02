@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 inp_points = np.loadtxt(fname="input_1.txt",skiprows=1)
 # print(inp_points)
 x = []
@@ -10,7 +11,7 @@ for point in inp_points:
     y.append(point[1])
 plt.scatter(x,y,edgecolors="lightblue")
 
-out_points = np.loadtxt(fname="output_1.txt")
+out_points = np.loadtxt(fname="output_jarvis.txt")
 # print(out_points)
 x = []
 y = []
