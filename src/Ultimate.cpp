@@ -1,4 +1,5 @@
 #include "../include/Ultimate.h"
+#include <limits.h>
 using namespace std;
 
 /**
@@ -51,6 +52,7 @@ void Ultimate::computeHull(){
     clock_t start, end;
     double cpu_time;
     start = clock();
+    
     vector<Point > vec = computeUpperHull();
     vector<Point > low = computeLowerHull();
     end = clock();
@@ -72,7 +74,7 @@ vector<Point > Ultimate::computeUpperHull(){
     // Lower - Smallest y  
     Point upmin, upmax;
     Point lpmin, lpmax;
-    int x_min = 99999, x_max = -1;
+    long long int x_min = LONG_MAX, x_max = LONG_MIN;
     for(auto i=input_points.begin(); i!=input_points.end(); i++){
         Point temp = *i;
         if(temp.first < x_min){
@@ -132,7 +134,7 @@ vector<Point > Ultimate::computeLowerHull(){
     // Lower - Smallest y  
     Point upmin, upmax;
     Point lpmin, lpmax;
-    int x_min = 99999, x_max = -1;
+    long long int x_min = LONG_MAX, x_max = LONG_MIN;
     for(auto i=input_points.begin(); i!=input_points.end(); i++){
         Point temp = *i;
         if(temp.first < x_min){

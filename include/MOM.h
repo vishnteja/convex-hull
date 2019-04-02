@@ -4,7 +4,7 @@
 #include <bits/stdc++.h>
 #include "MOM.h"
 using namespace std;
-#define Point pair<int, int>
+#define Point pair<long long int, long long int>
 
 pair<double,int> medOfMed(vector<double> &medArr);
 pair<double,int> medOfMedPoints(vector<Point > p);
