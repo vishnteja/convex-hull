@@ -1,4 +1,4 @@
-#include "../include/Segment.h"
+#include "Segment.h"
 #include <bits/stdc++.h>
 using namespace std;
 

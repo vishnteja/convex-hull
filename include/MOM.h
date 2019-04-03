@@ -1,8 +1,7 @@
-#ifndef JARVIS_H
-#define JARVIS_H
+#ifndef MOM_H
+#define MOM_H
 
 #include <bits/stdc++.h>
-#include "MOM.h"
 using namespace std;
 #define Point pair<long long int, long long int>
 

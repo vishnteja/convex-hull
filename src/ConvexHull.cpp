@@ -1,7 +1,8 @@
-#include "../include/ConvexHull.h"
-#include "../include/Ultimate.h"
-#include "../include/Jarvis.h"
-#include "../include/Graham.h"
+#include "ConvexHull.h"
+#include "Ultimate.h"
+#include "Jarvis.h"
+#include "Graham.h"
+#include <iostream>
 using namespace std;
 
 /**
@@ -45,7 +46,7 @@ void ConvexHull::readFile(string file_path){
 
 /**
  * @brief Get function that return the input points.
- * 
+ *
  * @return vector<Point > Contains the points as pairs in a vector
  */
 vector<Point > ConvexHull::getInputPoints(){
@@ -60,21 +61,36 @@ void ConvexHull::setInput(vector<Point > input){
     input_points = input;
 }
 
-void ConvexHull::computeHull(string algo_name){
+vector<State > ConvexHull::computeHull(string algo_name){
     if(algo_name=="jarvis"){
         Jarvis jarv_obj = Jarvis();
         jarv_obj.setInput(input_points);
         jarv_obj.computeHull();
         output_hull = jarv_obj.getOutput();
+        return jarv_obj.getHistory();
     }else if(algo_name == "graham"){
         Graham grah_obj = Graham();
         grah_obj.setInput(input_points);
         grah_obj.computeHull();
         output_hull = grah_obj.getOutput();
+        return grah_obj.getHistory();
     }else if(algo_name == "kps"){
         Ultimate kps_obj = Ultimate();
+        kps_obj.verbose = true;
         kps_obj.setInput(input_points);
         kps_obj.computeHull();
         output_hull = kps_obj.getOutput();
+        return kps_obj.getHistory();
     }
+}
+
+vector<State > ConvexHull::getHistory()
+{
+    cout<< "Returning history "<<history.size();
+    return history;
+}
+
+void ConvexHull::setHistory(vector<State> givenHistory)
+{
+    history = givenHistory;
 }

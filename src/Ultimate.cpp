@@ -1,5 +1,5 @@
-#include "../include/Ultimate.h"
-#include <limits.h>
+#include "Ultimate.h"
+#include "State.h"
 using namespace std;
 
 /**
@@ -55,12 +55,31 @@ void Ultimate::computeHull(){
     
     vector<Point > vec = computeUpperHull();
     vector<Point > low = computeLowerHull();
+    
     end = clock();
+    
     cpu_time = double(end - start) / double(CLOCKS_PER_SEC);
     cout<<"Time: "<<fixed<<cpu_time<<setprecision(6);
     cout<< " s" << endl;
+    
     vec.insert(vec.end(), low.rbegin(), low.rend());
     output_hull = vec;
+    if(verbose){
+            // Display Full HULL
+            State temp;
+            vector<Point> empty;
+            temp.normal_points = input_points;
+            
+            temp.bold_points = output_hull;
+            
+            temp.bold_edges = output_hull;
+            
+            temp.normal_edges = empty;
+
+            history.push_back(temp);
+        }
+    
+
 }
 
 /**
@@ -102,6 +121,25 @@ vector<Point > Ultimate::computeUpperHull(){
             }
         }
     }
+    //verbose
+    // Step 1
+    if(verbose){
+        State temp;
+
+        temp.normal_points = input_points;
+        
+        vector<Point > bp;
+        bp.push_back(upmin);
+        bp.push_back(upmax);
+        temp.bold_points = bp;
+
+        temp.normal_edges = bp;
+
+        vector<Point > be;
+        temp.bold_edges = be;
+         
+        history.push_back(temp);
+    }
 
     // 2. Upper Hull
     Segment divider = Segment(upmin, upmax);
@@ -118,6 +156,24 @@ vector<Point > Ultimate::computeUpperHull(){
     //Debug
     // cout<<"Upper Hull Candidates";
     // traverse(T);
+    
+    //verbose
+    //Step 2
+    if(verbose){
+        State temp;
+        temp.normal_points = T;
+        
+        vector<Point > bp;
+        bp.push_back(upmin);
+        bp.push_back(upmax);
+        temp.bold_points = bp;
+
+        vector<Point > be;
+        temp.normal_edges = be;
+        temp.bold_edges = be;
+         
+        history.push_back(temp);
+    }
     vector<Point > upper_hull = upperHull(upmin, upmax, T);
 
     return upper_hull;
@@ -163,6 +219,26 @@ vector<Point > Ultimate::computeLowerHull(){
         }
     }
 
+    //verbose
+     // Step 1
+    if(verbose){
+        State temp;
+
+        temp.normal_points = input_points;
+        
+        vector<Point > bp;
+        bp.push_back(lpmin);
+        bp.push_back(lpmax);
+        temp.bold_points = bp;
+
+        temp.normal_edges = bp;
+
+        vector<Point > be;
+        temp.bold_edges = be;
+         
+        history.push_back(temp);
+    }
+
     // 2. Lower Hull
     Segment divider = Segment(lpmin, lpmax);
     
@@ -175,7 +251,23 @@ vector<Point > Ultimate::computeLowerHull(){
     }
     T.push_back(lpmax);
 
+    //verbose
+    //Step 2
+    if(verbose){
+        State temp;
+        temp.normal_points = T;
+        
+        vector<Point > bp;
+        bp.push_back(lpmin);
+        bp.push_back(lpmax);
+        temp.bold_points = bp;
 
+        vector<Point > be;
+        temp.normal_edges = be;
+        temp.bold_edges = be;
+         
+        history.push_back(temp);
+    }
     vector<Point > lower_hull = lowerHull(lpmin, lpmax, T);
 
     return lower_hull;
@@ -201,10 +293,40 @@ vector<Point > Ultimate::upperHull(Point pmin, Point pmax, vector<Point > T){
         double median_x = medianX(T);
         median_x = median_x - 0.5;
 
+        //verbose 
+        if(verbose){
+            cout<<"Median Can come"<<endl;
+        }
+
         // 3. Find Upper Bridge segment pl-pr
         Segment upper_bridge = upperBridge(T, median_x);
         Point pl = upper_bridge.getP1();
         Point pr = upper_bridge.getP2();
+
+        //verbose
+        if(verbose){
+            State temp;
+            temp.normal_points = T;
+            vector<Point> empty;
+            
+            temp.bold_points = empty;
+            temp.bold_points.push_back(pmin);
+            temp.bold_points.push_back(pmax);
+            temp.bold_points.push_back(pl);
+            temp.bold_points.push_back(pr);
+
+            temp.normal_edges = empty;
+            temp.normal_edges.push_back(pmin);
+            temp.normal_edges.push_back(pl);
+            temp.normal_edges.push_back(pr);
+            temp.normal_edges.push_back(pmax);
+
+            temp.bold_edges = empty;
+            temp.bold_edges.push_back(pl);
+            temp.bold_edges.push_back(pr);
+
+            history.push_back(temp);
+        }
 
         // 4. Discard inner points  & Seperate into T_left and T_right
         vector<Point > Tleft;
@@ -245,10 +367,70 @@ vector<Point > Ultimate::upperHull(Point pmin, Point pmax, vector<Point > T){
         // cout<<"T_Left";
         // traverse(Tleft);
         // cout<<endl;
+        
+        //verbose
+        if(verbose){
+            State temp;
+            temp.normal_points = Tleft;
+            vector<Point> empty;
+
+            temp.bold_points = empty;
+            temp.bold_points.push_back(pmin);
+            temp.bold_points.push_back(pl);
+
+            temp.normal_edges = empty;
+            temp.bold_edges = empty;
+
+            history.push_back(temp);
+        }
+        
         vector <Point > left_hull = upperHull(pmin, pl, Tleft);
+        
         // cout<<"T_Right";
         // traverse(Tright);
         // cout<<endl;
+        
+        //verbose
+        if(verbose){
+            // refresh
+            State temp;
+            temp.normal_points = T;
+            vector<Point> empty;
+
+            temp.bold_points = empty;
+            temp.bold_points.push_back(pmin);
+            temp.bold_points.push_back(pmax);
+            temp.bold_points.push_back(pl);
+            temp.bold_points.push_back(pr);
+
+            temp.bold_edges = left_hull;
+
+            temp.normal_edges = empty;
+            temp.normal_edges.push_back(pmin);
+            temp.normal_edges.push_back(pl);
+            temp.normal_edges.push_back(pr);
+            temp.normal_edges.push_back(pmax);
+
+            history.push_back(temp);
+        }
+        
+        
+        //verbose
+        if(verbose){
+            // go to Tright
+            State temp;
+            temp.normal_points = Tright;
+            vector<Point> empty;
+
+            temp.bold_points = empty;
+            temp.bold_points.push_back(pr);
+            temp.bold_points.push_back(pmax);
+
+            temp.normal_edges = empty;
+            temp.bold_edges = empty;
+
+            history.push_back(temp);
+        }
         vector <Point > right_hull = upperHull(pr, pmax, Tright);
 
         // Concatenate 
@@ -260,6 +442,22 @@ vector<Point > Ultimate::upperHull(Point pmin, Point pmax, vector<Point > T){
         // cout<<"Upper Hull:"<<endl;
         // traverse(res);
         // left_hull.insert( left_hull.end(), right_hull.begin(), right_hull.end());
+        
+        if(verbose){
+            // Display Full HULL
+            State temp;
+            vector<Point> empty;
+            temp.normal_points = T;
+            
+            temp.bold_points = res;
+            
+            temp.bold_edges = res;
+            
+            temp.normal_edges = empty;
+
+            history.push_back(temp);
+        }
+
         return res;
     }
 }
@@ -487,11 +685,44 @@ vector<Point > Ultimate::lowerHull(Point pmin, Point pmax, vector<Point > T){
     else{
         // 2. Find median of the x coordinates
         double median_x = medianX(T);
+        median_x = median_x -0.5;
+
+        
+        //verbose 
+        if(verbose){
+            cout<<"Median Can come"<<endl;
+        }
+
 
         // 3. Find Upper Bridge segment pl-pr
         Segment lower_bridge = lowerBridge(T, median_x);
         Point pl = lower_bridge.getP1();
         Point pr = lower_bridge.getP2();
+
+         //verbose
+        if(verbose){
+            State temp;
+            temp.normal_points = T;
+            vector<Point> empty;
+            
+            temp.bold_points = empty;
+            temp.bold_points.push_back(pmin);
+            temp.bold_points.push_back(pmax);
+            temp.bold_points.push_back(pl);
+            temp.bold_points.push_back(pr);
+
+            temp.normal_edges = empty;
+            temp.normal_edges.push_back(pmin);
+            temp.normal_edges.push_back(pl);
+            temp.normal_edges.push_back(pr);
+            temp.normal_edges.push_back(pmax);
+
+            temp.bold_edges = empty;
+            temp.bold_edges.push_back(pl);
+            temp.bold_edges.push_back(pr);
+
+            history.push_back(temp);
+        }
 
         // 4. Discard inner points  & Seperate into T_left and T_right
         vector<Point > Tleft;
@@ -516,20 +747,95 @@ vector<Point > Ultimate::lowerHull(Point pmin, Point pmax, vector<Point > T){
                 Tright.push_back(temp) ;
         }
 
+        //verbose
+        if(verbose){
+            State temp;
+            temp.normal_points = Tleft;
+            vector<Point> empty;
+
+            temp.bold_points = empty;
+            temp.bold_points.push_back(pmin);
+            temp.bold_points.push_back(pl);
+
+            temp.normal_edges = empty;
+            temp.bold_edges = empty;
+
+            history.push_back(temp);
+        }
 
         // 5. Concatenate hull of left and right
         // cout<<"T_Left";
         // traverse(Tleft);
         // cout<<endl;
         vector <Point > left_hull = lowerHull(pmin, pl, Tleft);
+
+        //verbose
+        if(verbose){
+            // refresh
+            State temp;
+            temp.normal_points = T;
+            vector<Point> empty;
+
+            temp.bold_points = empty;
+            temp.bold_points.push_back(pmin);
+            temp.bold_points.push_back(pmax);
+            temp.bold_points.push_back(pl);
+            temp.bold_points.push_back(pr);
+
+            temp.bold_edges = left_hull;
+
+            temp.normal_edges = empty;
+            temp.normal_edges.push_back(pmin);
+            temp.normal_edges.push_back(pl);
+            temp.normal_edges.push_back(pr);
+            temp.normal_edges.push_back(pmax);
+
+            history.push_back(temp);
+        }
+
+         //verbose
+        if(verbose){
+            // go to Tright
+            State temp;
+            temp.normal_points = Tright;
+            vector<Point> empty;
+
+            temp.bold_points = empty;
+            temp.bold_points.push_back(pr);
+            temp.bold_points.push_back(pmax);
+
+            temp.normal_edges = empty;
+            temp.bold_edges = empty;
+
+            history.push_back(temp);
+        }
+
         // cout<<"T_Right";
         // traverse(Tright);
         // cout<<endl;
         vector <Point > right_hull = lowerHull(pr, pmax, Tright);
 
         // Concatenate 
-        left_hull.insert( left_hull.end(), right_hull.begin(), right_hull.end());
-        return left_hull;
+        vector <Point> res;
+        res.insert(res.end(), left_hull.begin(), left_hull.end());
+        res.insert(res.end(), right_hull.begin(), right_hull.end());
+
+        if(verbose){
+            // Display Full HULL
+            State temp;
+            vector<Point> empty;
+            temp.normal_points = T;
+            
+            temp.bold_points = res;
+            
+            temp.bold_edges = res;
+            
+            temp.normal_edges = empty;
+
+            history.push_back(temp);
+        }
+        
+        return res;
     }
 }
 

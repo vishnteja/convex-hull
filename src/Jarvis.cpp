@@ -1,4 +1,6 @@
-#include "../include/Jarvis.h"
+#include "Jarvis.h"
+#include "State.h"
+
 using namespace std; 
  
 int orientationJ(Point p, Point q, Point r){
@@ -33,13 +35,17 @@ void Jarvis::computeHull()
         q = (p+1)%n; 
         for (int i = 0; i < n; i++) 
         { 
+            vector<Point > b_points = {input_points.at(p), input_points.at(i), input_points.at(q)};
+            State temp(input_points, b_points, output_hull, b_points);
+            history.push_back(temp);
+
             if (orientationJ(input_points[p], input_points[i], input_points[q]) == 2) 
                q = i; 
         } 
         p = q; 
  
     } while (p != l);
-
+    //cout<< "Jarvis " <<history.size();
     end = clock();
     cpu_time = double(end - start) / double(CLOCKS_PER_SEC);
     cout<<"Time: "<<fixed<<cpu_time<<setprecision(6);

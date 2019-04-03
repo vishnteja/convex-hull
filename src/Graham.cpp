@@ -1,4 +1,5 @@
-#include "../include/Graham.h"
+#include "Graham.h"
+#include "State.h"
 using namespace std;   
  
 Point p0(0,0); 
@@ -104,6 +105,10 @@ void Graham::computeHull()
    p0 = input_points[0]; 
    qsort(&input_points[1], n-1, sizeof(Point), compare); 
 
+   vector<Point > *temp_point = new vector<Point > {p0};
+   State *temp = new State(input_points, *temp_point, output_hull, output_hull);
+   history.push_back(*temp);
+
    int m = 1; 
    for (int i=1; i<n; i++) 
    { 
@@ -113,17 +118,35 @@ void Graham::computeHull()
        input_points[m] = input_points[i]; 
        m++;  
    } 
+
+   vector<Point> temp1 = {p0};
+   temp_point = new vector<Point>;
+   copy(input_points.begin(), input_points.begin()+m, back_inserter(*temp_point));
+   temp = new State(*temp_point, temp1, output_hull, output_hull);
+   history.push_back(*temp);
  
    if (m < 3) return; 
    output_hull.push_back(input_points[0]); 
    output_hull.push_back(input_points[1]); 
    output_hull.push_back(input_points[2]); 
 
+   temp_point = new vector<Point > {output_hull.at(output_hull.size()-1), output_hull.at(output_hull.size()-2), output_hull.at(output_hull.size()-3)};
+   temp = new State(input_points, *temp_point, output_hull, *temp_point);
+   history.push_back(*temp);
+
    for (int i = 3; i < m; i++) 
    {
       while (orientation(nextToTop(output_hull), output_hull.back(), input_points[i]) != 2) 
-         output_hull.pop_back(); 
-      output_hull.push_back(input_points[i]); 
+      {
+          output_hull.pop_back();
+          temp_point = new vector<Point > {output_hull.at(output_hull.size()-1), output_hull.at(output_hull.size()-2), output_hull.at(output_hull.size()-3)};
+          temp = new State(input_points, *temp_point, output_hull, *temp_point);
+          history.push_back(*temp);
+      }
+      output_hull.push_back(input_points[i]);
+      temp_point = new vector<Point > {output_hull.at(output_hull.size()-1), output_hull.at(output_hull.size()-2), output_hull.at(output_hull.size()-3)};
+      temp = new State(input_points, *temp_point, output_hull, *temp_point);
+      history.push_back(*temp);
    } 
    end = clock();
    cpu_time = (double(end - start) / double(CLOCKS_PER_SEC));
